@@ -2,6 +2,7 @@
 
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import Image from "next/image";
+import emailjs from "@emailjs/browser";
 
 // Define the type for the form data
 interface FormData {
@@ -32,9 +33,34 @@ const Contact: React.FC = () => {
   // Handle form submission
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Form Data Submitted:", formData);
-    alert("Thank you for contacting us! We'll get back to you soon.");
-    setFormData({ name: "", email: "", message: "" }); // Reset form
+
+    // Send email using EmailJS
+    emailjs
+      .send(
+        "krishno", // Replace with your EmailJS Service ID
+        "template_tn37see", // Replace with your EmailJS Template ID
+        {
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+        }, // Form data to be sent
+        "81j2LH87ysHUxp4EJ" // Replace with your EmailJS Public Key
+      )
+      .then(
+        (response) => {
+          console.log(
+            "Email sent successfully!",
+            response.status,
+            response.text
+          );
+          alert("Thank you for contacting us! We'll get back to you soon.");
+          setFormData({ name: "", email: "", message: "" }); // Reset form
+        },
+        (error) => {
+          console.error("Failed to send email:", error);
+          alert("Failed to send message. Please try again.");
+        }
+      );
   };
 
   return (
@@ -44,8 +70,9 @@ const Contact: React.FC = () => {
           src="/bracknellmanandvan.jpg"
           alt="Man and Van Services"
           className="w-full h-full object-cover"
-          width={300}
-          height={300}
+          width={1200} // Use appropriate width
+          height={800} // Use appropriate height
+          priority // Add priority if this image is above the fold
         />
         {/* Overlay */}
         <div className="absolute inset-0 bg-black opacity-80 flex items-center justify-center">
