@@ -11,7 +11,7 @@ interface FormData {
   message: string;
 }
 
-const Contact: React.FC = () => {
+const Contact= () => {
   // Initialize state with the FormData type
   const [formData, setFormData] = useState<FormData>({
     name: "",
@@ -19,40 +19,48 @@ const Contact: React.FC = () => {
     message: "",
   });
 
+  const[name, setName]=useState('')
+  const[email, setEmail]=useState('')
+  const [massage, setMassage] = useState("");
+
   // Handle input change
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
+  // const handleChange = (
+  //   e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  // ) => {
+  //   const { name, value } = e.target;
+  //   setFormData({
+  //     ...formData,
+  //     [name]: value,
+  //   });
+  // };
+
+
 
   // Handle form submission
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    console.log("Sending email with data:", {
+      name: formData.name,
+      email: formData.email,
+      message: formData.message,
+    });
+
     // Send email using EmailJS
     emailjs
       .send(
-        "krishno", // Replace with your EmailJS Service ID
-        "template_tn37see", // Replace with your EmailJS Template ID
+        "krishno", // Service ID
+        "template_tn37see", // Template ID
         {
           name: formData.name,
           email: formData.email,
           message: formData.message,
-        }, // Form data to be sent
-        "81j2LH87ysHUxp4EJ" // Replace with your EmailJS Public Key
+        }, // Data object
+        "81j2LH87ysHUxp4EJ" // Public Key
       )
       .then(
         (response) => {
-          console.log(
-            "Email sent successfully!",
-            response.status,
-            response.text
-          );
+          console.log("Email sent successfully!", response);
           alert("Thank you for contacting us! We'll get back to you soon.");
           setFormData({ name: "", email: "", message: "" }); // Reset form
         },
@@ -101,8 +109,8 @@ const Contact: React.FC = () => {
                 type="text"
                 id="name"
                 name="name"
-                value={formData.name}
-                onChange={handleChange}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                 placeholder="Enter your name"
                 required
@@ -121,8 +129,8 @@ const Contact: React.FC = () => {
                 type="email"
                 id="email"
                 name="email"
-                value={formData.email}
-                onChange={handleChange}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                 placeholder="Enter your email"
                 required
@@ -140,8 +148,8 @@ const Contact: React.FC = () => {
               <textarea
                 id="message"
                 name="message"
-                value={formData.message}
-                onChange={handleChange}
+                value={massage}
+                onChange={(e) => setMassage(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                 rows={5}
                 placeholder="Enter your message"
